@@ -47,7 +47,7 @@
 | `FALKORDB_URI` | | ✅ | `redis://${{ falkordb.RAILWAY_PRIVATE_DOMAIN }}:6379` |
 | `FALKORDB_DATABASE` | | ✅ | `default_db` |
 | `OPENAI_API_KEY` | | ✅ | **user-provided (required)** |
-| `MODEL_NAME` | | ✅ | `gpt-4o-mini` (optional) |
+| `MODEL_NAME` | | ✅ | `gpt-5.4-mini-2026-03-17` (optional) |
 | `GRAPHITI_GROUP_ID` | | ✅ | `main` (optional) |
 | `SEMAPHORE_LIMIT` | | ✅ | `10` (lower on rate-limited keys) |
 

@@ -58,8 +58,9 @@ See the Graphiti MCP server README for the full provider matrix:
 
 - **LLM 429 / rate-limit errors** → lower `SEMAPHORE_LIMIT` (try `1`–`5` on free/low tiers).
 - **Multiple isolated graphs** → give each client a distinct `GRAPHITI_GROUP_ID`.
-- **Cost** → `gpt-4o-mini` + `text-embedding-3-small` (the defaults here) are the
-  cheapest sensible combo; bump `MODEL_NAME` for higher extraction quality.
+- **Cost / model** → the default `gpt-5.4-mini-2026-03-17` + `text-embedding-3-small`
+  is a fast, low-cost combo with strong tool-use; set `MODEL_NAME` to any OpenAI model
+  id (or `gpt-5.4-mini` to auto-track the latest snapshot) for different cost/quality.
 
 ## 5. Backups
 

@@ -39,7 +39,7 @@ Add **graphiti** (prebuilt image):
   - `FALKORDB_URI = redis://${{ falkordb.RAILWAY_PRIVATE_DOMAIN }}:6379`
   - `FALKORDB_PASSWORD = ${{ falkordb.FALKORDB_PASSWORD }}`   # reference the same secret
   - `FALKORDB_DATABASE = default_db`
-  - `MODEL_NAME = gpt-4o-mini`
+  - `MODEL_NAME = gpt-5.4-mini-2026-03-17`
   - `GRAPHITI_GROUP_ID = main`
   - `SEMAPHORE_LIMIT = 10`
 - Networking: generate a **public domain → port 8000** (this is the `/mcp/` endpoint).
