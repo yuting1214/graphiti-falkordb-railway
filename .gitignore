@@ -13,3 +13,8 @@
 *.rdb
 dump.rdb
 data/
+
+# Local-only docs — internal tech detail, intentionally not shared
+docs/ARCHITECTURE.md
+docs/PUBLISH.md
+docs/UNDERSTANDING-graphiti-falkordb.md

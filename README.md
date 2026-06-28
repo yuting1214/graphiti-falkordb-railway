@@ -73,13 +73,11 @@ store is never left open. You only set your LLM key.
 
 ```
 .
-├── docker-compose.yml   # canonical 2-service config — run it locally to verify before publish
+├── docker-compose.yml   # canonical 2-service config — run it locally to verify
 ├── .env.example         # the variables the template exposes
 ├── docs/
-│   ├── ARCHITECTURE.md  # how the two services wire together on Railway
-│   ├── USAGE.md         # connect an MCP client; swap LLM provider; tuning
-│   └── PUBLISH.md       # exact `railway templates` steps + var wiring to ship the button
-└── assets/              # marketplace icon + hero (add before publishing)
+│   └── USAGE.md         # connect an MCP client; swap LLM provider; tuning
+└── assets/              # marketplace icon + hero
 ```
 
 ## Try it locally first
@@ -87,12 +85,12 @@ store is never left open. You only set your LLM key.
 ```bash
 cp .env.example .env        # set OPENAI_API_KEY (+ pick a FALKORDB_PASSWORD)
 docker compose up
-# MCP endpoint:  http://localhost:8000/mcp/
+# MCP endpoint:  http://localhost:8000/mcp   (no trailing slash)
 # FalkorDB UI:   http://localhost:3000
 # Health:        http://localhost:8000/health
 ```
 
-See **[docs/PUBLISH.md](docs/PUBLISH.md)** to turn this into the one-click marketplace button.
+See **[docs/USAGE.md](docs/USAGE.md)** to connect an MCP client and operate the stack.
 
 ## License
 
