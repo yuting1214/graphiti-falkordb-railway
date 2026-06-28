@@ -9,6 +9,8 @@
 
 <!-- Replace the deploy URL above with the published template code once `railway templates publish` returns it. See docs/PUBLISH.md. -->
 
+![Graphiti temporal knowledge-graph walkthrough](assets/hero.gif)
+
 ---
 
 ## Deploy and Host Graphiti + FalkorDB on Railway
@@ -98,3 +100,7 @@ See **[docs/PUBLISH.md](docs/PUBLISH.md)** to turn this into the one-click marke
 
 MIT — see [LICENSE](LICENSE). Graphiti and FalkorDB are the trademarks/property of their
 respective owners; this template only orchestrates their official images.
+
+The icon (`assets/icon.png`) and hero (`assets/hero.gif`) are the Graphiti/Zep brand mark
+and demo animation from [getzep/graphiti](https://github.com/getzep/graphiti) (MIT),
+included here for the marketplace listing of their software.
