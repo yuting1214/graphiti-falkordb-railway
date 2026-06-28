@@ -5,8 +5,12 @@
 After deploy, Railway gives the **graphiti** service a public domain. The MCP endpoint is:
 
 ```
-https://<your-graphiti-domain>/mcp/
+https://<your-graphiti-domain>/mcp
 ```
+
+> **Use `/mcp` with no trailing slash.** The `/mcp/` form 307-redirects to an insecure
+> `http://…/mcp` (the server doesn't know it's behind Railway's TLS proxy), which breaks
+> most clients. Always target the no-slash URL.
 
 ### Claude Desktop / Cursor / Windsurf (HTTP MCP)
 
@@ -15,13 +19,27 @@ https://<your-graphiti-domain>/mcp/
   "mcpServers": {
     "graphiti": {
       "transport": "http",
-      "url": "https://<your-graphiti-domain>/mcp/"
+      "url": "https://<your-graphiti-domain>/mcp"
     }
   }
 }
 ```
 
-Clients that only speak stdio can bridge with `npx mcp-remote https://<domain>/mcp/`.
+Clients that only speak stdio can bridge with `npx mcp-remote https://<domain>/mcp`.
+
+> **Why the template sets a custom start command on `graphiti`:** the official MCP image
+> has a DNS-rebinding host check that `421 Invalid Host header`-rejects remote clients
+> behind a reverse proxy (getzep/graphiti #1205, no config knob). The template's start
+> command patches `FastMCP` to disable that check before launch. If you build your own
+> service from the raw image without this, external clients get 421s.
+
+### Verify it end-to-end
+
+```bash
+uv run scripts/verify_graphiti.py https://<your-graphiti-domain>
+```
+Adds an episode, waits for LLM extraction, and searches the graph — prints `✅ PASS`
+when entities/facts come back (proves LLM + embeddings + FalkorDB all work).
 
 ### Core tools exposed by the Graphiti MCP server
 

@@ -49,8 +49,23 @@ services:
       # --- Graphiti behaviour ---
       - GRAPHITI_GROUP_ID=${GRAPHITI_GROUP_ID:-main}
       - SEMAPHORE_LIMIT=${SEMAPHORE_LIMIT:-10}   # lower this if you hit LLM 429s
+    # The official MCP server has a DNS-rebinding host check that 421-rejects requests
+    # behind a reverse proxy / public domain (getzep/graphiti #1205 — no env/config knob).
+    # Patch FastMCP to disable it before launch. Harmless locally; REQUIRED on Railway
+    # (and any proxied https deploy). This is the same start command the template uses.
+    command:
+      - uv
+      - run
+      - --no-sync
+      - python
+      - -c
+      - |
+        import mcp.server.fastmcp as f
+        from mcp.server.transport_security import TransportSecuritySettings as T
+        f.FastMCP.__init__ = (lambda _o: lambda self, *a, **k: _o(self, *a, **{**k, "transport_security": T(enable_dns_rebinding_protection=False)}))(f.FastMCP.__init__)
+        import runpy; runpy.run_path("main.py", run_name="__main__")
     ports:
-      - "8000:8000"                    # MCP server -> http://localhost:8000/mcp/
+      - "8000:8000"                    # MCP server -> http://localhost:8000/mcp  (no trailing slash!)
 
 volumes:
   falkordb_data:
