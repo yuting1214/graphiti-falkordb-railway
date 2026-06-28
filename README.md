@@ -9,7 +9,7 @@
 
 <!-- Replace the deploy URL above with the published template code once `railway templates publish` returns it. See docs/PUBLISH.md. -->
 
-![Graphiti temporal knowledge-graph walkthrough](assets/hero.gif)
+![Graphiti temporal knowledge-graph walkthrough](https://raw.githubusercontent.com/yuting1214/graphiti-falkordb-railway/9b7f2de/assets/hero.gif)
 
 ---
 
