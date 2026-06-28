@@ -1,5 +1,18 @@
 # Publishing the one-click template
 
+> **How this template was actually published (read this first).** Because both services
+> are prebuilt images with *cross-service* wiring, the live one-click template was built
+> by: (1) standing up a real 2-service Railway project (image services + reference vars +
+> volume + domains) via the CLI/GraphQL API, (2) `templateGenerate` to draft it, (3) the
+> **dashboard template editor** to set the variable *defaults* — `templateGenerate`
+> preserves `${{...}}` references but **strips plain scalar values and the `secret()`
+> generator**, and there is **no public API to set them**, (4) `railway templates publish`.
+> Published template: **https://railway.com/deploy/graphiti-falkordb-knowledge-graph-memory**
+> The idealized CLI recipe below is kept for reference; the dashboard-editor step in (3) is
+> unavoidable today. Key values: FalkorDB port **16379**, password
+> `${{ secret(32, "A-Za-z") }}` (URL-safe), `MODEL_NAME=gpt-5.4-mini-2026-03-17`.
+
+
 This template is built entirely from **prebuilt public images** (`falkordb/falkordb` and
 `zepai/knowledge-graph-mcp:standalone`), so — unlike a source-built template — it does **not**
 need this GitHub repo as the deploy source. The repo is the canonical config, docs, and

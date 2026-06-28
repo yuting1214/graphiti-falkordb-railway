@@ -5,9 +5,7 @@
 > Windsurf, your own app) a real-time, temporally-aware knowledge graph it can write to
 > and query over HTTP. **Bring only an `OPENAI_API_KEY`.**
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/graphiti-falkordb)
-
-<!-- Replace the deploy URL above with the published template code once `railway templates publish` returns it. See docs/PUBLISH.md. -->
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/graphiti-falkordb-knowledge-graph-memory?referralCode=jk_FgY&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 ![Graphiti temporal knowledge-graph walkthrough](https://raw.githubusercontent.com/yuting1214/graphiti-falkordb-railway/9b7f2de/assets/hero.gif)
 

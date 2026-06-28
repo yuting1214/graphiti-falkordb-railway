@@ -12,14 +12,14 @@
                 │  MCP server  :8000 /mcp/   │  ◀── your agent / MCP client
                 │  health      :8000 /health │
                 └─────────────┬──────────────┘
-                              │  redis://<falkordb>.railway.internal:6379
+                              │  redis://<falkordb>.railway.internal:16379
                               │  (Railway private network, auth = shared secret)
                               ▼
                 ┌───────────────────────────┐
                 │  falkordb  (service)       │
                 │  falkordb/falkordb:latest  │
                 │                            │
-                │  graph proto :6379         │
+                │  graph proto :16379         │
                 │  browser UI  :3000 (opt)   │
                 │  volume  /var/lib/falkordb/data
                 └───────────────────────────┘
@@ -41,10 +41,13 @@
 
 | Variable | `falkordb` | `graphiti` | Value |
 |---|:--:|:--:|---|
-| `FALKORDB_PASSWORD` | ✅ | ✅ | `${{ secret(16) }}` — generated once, shared to both |
+| `FALKORDB_PASSWORD` | ✅ | ✅ | `${{ secret(32, "A-Za-z") }}` — generated once (URL-safe), shared to both |
 | `REDIS_ARGS` | ✅ | | `--requirepass ${{ FALKORDB_PASSWORD }}` |
+| `FALKORDB_PORT` | ✅ | | `16379` (FalkorDB binds here, via `FALKORDB_ARGS`) |
+| `FALKORDB_ARGS` | ✅ | | `--port ${{ FALKORDB_PORT }} --bind 0.0.0.0 :: --protected-mode no` |
 | `BROWSER` | ✅ | | `1` (web UI on `:3000`) |
-| `FALKORDB_URI` | | ✅ | `redis://${{ falkordb.RAILWAY_PRIVATE_DOMAIN }}:6379` |
+| `FALKORDB_URI` | | ✅ | `redis://${{ falkordb.RAILWAY_PRIVATE_DOMAIN }}:${{ falkordb.FALKORDB_PORT }}` |
+| `FALKORDB_PASSWORD` | | ✅ | `${{ falkordb.FALKORDB_PASSWORD }}` (same secret) |
 | `FALKORDB_DATABASE` | | ✅ | `default_db` |
 | `OPENAI_API_KEY` | | ✅ | **user-provided (required)** |
 | `MODEL_NAME` | | ✅ | `gpt-5.4-mini-2026-03-17` (optional) |
@@ -52,7 +55,7 @@
 | `SEMAPHORE_LIMIT` | | ✅ | `10` (lower on rate-limited keys) |
 
 - **Public domain → `graphiti` on port 8000.** That is the MCP endpoint clients hit.
-- **FalkorDB stays private** (6379 over `railway.internal`); only expose `:3000` publicly if
+- **FalkorDB stays private** (16379 over `railway.internal`); only expose `:3000` publicly if
   you actually want the browser UI reachable — it is password-protected by the same secret.
 - Graphiti waits for FalkorDB to be reachable before serving; Railway's restart policy
   retries until the dependency is up.
