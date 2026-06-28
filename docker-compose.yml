@@ -1,0 +1,57 @@
+# Graphiti + FalkorDB — canonical two-service config.
+#
+# This mirrors what the Railway template provisions, using ONLY the official
+# prebuilt images (no local build, no mounted config) so that `docker compose up`
+# here is a faithful smoke-test of the deployed template.
+#
+#   FalkorDB  (falkordb/falkordb:latest)        -> the graph store, on :6379 (+ :3000 UI)
+#   Graphiti  (zepai/knowledge-graph-mcp:...)   -> the MCP server, on :8000/mcp/
+#
+# The Graphiti image is the `:standalone` (FalkorDB-flavoured) build — the only
+# published Graphiti image that speaks FalkorDB. We point it at the SEPARATE
+# FalkorDB service via FALKORDB_URI, so the authoritative graph lives on that
+# service's volume.
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    restart: unless-stopped
+    environment:
+      # Lock the store down. On Railway this is an auto-generated sealed secret.
+      - REDIS_ARGS=--requirepass ${FALKORDB_PASSWORD:-changeme}
+      - BROWSER=${BROWSER:-1}          # set to 0 to drop the :3000 web UI
+    ports:
+      - "6379:6379"                    # graph protocol (private on Railway)
+      - "3000:3000"                    # FalkorDB browser UI (optional public)
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${FALKORDB_PASSWORD:-changeme}", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  graphiti:
+    image: zepai/knowledge-graph-mcp:standalone
+    restart: unless-stopped
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    environment:
+      # --- LLM (you provide) ---
+      - OPENAI_API_KEY=${OPENAI_API_KEY:?set OPENAI_API_KEY in .env}
+      - MODEL_NAME=${MODEL_NAME:-gpt-4o-mini}
+      - EMBEDDER_MODEL=${EMBEDDER_MODEL:-text-embedding-3-small}
+      # --- FalkorDB connection (points at the official container above) ---
+      - FALKORDB_URI=${FALKORDB_URI:-redis://falkordb:6379}
+      - FALKORDB_PASSWORD=${FALKORDB_PASSWORD:-changeme}
+      - FALKORDB_DATABASE=${FALKORDB_DATABASE:-default_db}
+      # --- Graphiti behaviour ---
+      - GRAPHITI_GROUP_ID=${GRAPHITI_GROUP_ID:-main}
+      - SEMAPHORE_LIMIT=${SEMAPHORE_LIMIT:-10}   # lower this if you hit LLM 429s
+    ports:
+      - "8000:8000"                    # MCP server -> http://localhost:8000/mcp/
+
+volumes:
+  falkordb_data:
+    driver: local
